@@ -9,15 +9,30 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
+//* FormKey
 class _HomeViewState extends State<HomeView> {
-  late final TextEditingController controller1;
+  late final TextEditingController inputController;
 
-  late final TextEditingController controller2;
+  late final TextEditingController outputController;
+
+  final _formKey = GlobalKey<FormState>();
+
+  String? validateDigit(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please enter text";
+    } else if (value.length < 2) {
+      return "Please enter text of more than 2 characters.";
+    } else if (value.length > 50) {
+      return "Please enter text of less than 50 characters";
+    } else {
+      return null;
+    }
+  }
 
   @override
   void initState() {
-    controller1 = TextEditingController();
-    controller2 = TextEditingController();
+    inputController = TextEditingController();
+    outputController = TextEditingController();
     super.initState();
   }
 
@@ -34,7 +49,7 @@ class _HomeViewState extends State<HomeView> {
               SizedBox(
                 height: 200,
                 child: Image.asset(
-                  "/Users/sedat/Desktop/selin/flutter_selin/linguify/lib/images/linguify_logo.jpeg",
+                  "/Users/sedat/Desktop/selin/linguify/assets/images/linguify_logo.jpeg",
                 ),
               ),
 
@@ -43,26 +58,35 @@ class _HomeViewState extends State<HomeView> {
               //* Input Field
               SizedBox(
                 height: 175,
-                child: TextBoxWidget(
-                  controller: controller1,
-                  hintText: "Start translation",
+                child: Form(
+                  key: _formKey,
+                  child: TextBoxWidget(
+                    formKey: _formKey,
+                    validateDigit: validateDigit,
+                    controller: inputController,
+                    hintText: "Start translation",
+                    hasClearButton: true,
+                  ),
                 ),
               ),
 
               const Divider(
                 height: 40,
                 thickness: 1,
-                color: AppColors.dividercolor,
+                color: AppColors.dividerColor,
               ),
 
-              //* Input Field
+              //* Output Field
               SizedBox(
                 height: 175,
                 child: TextBoxWidget(
-                  controller: controller2,
+                  controller: outputController,
                   hintText: "Output",
+                  hasCopyButton: true,
                 ),
               ),
+
+            
             ],
           ),
         ),
