@@ -20,7 +20,17 @@ class TextBoxWidget extends StatelessWidget {
   final bool hasCopyButton;
   final String? Function(String?)? validateDigit;
   final GlobalKey<FormState>? formKey;
+
+  //* Optional internet ikonu, bu homeview'dan gelsin ayarlamayı unutma!.
+  Widget internetIcon() {
+    return const Icon(
+      Icons.signal_wifi_statusbar_connected_no_internet_4_sharp,
+      color: AppColors.labelColor,
+    );
+  }
+
   
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -80,9 +90,10 @@ class TextBoxWidget extends StatelessWidget {
                         ).then(
                           (_) {
                             context.showErrorMessage(
-                              message:"There is no Internet Connection!"
-                              //message: "Copied Successfully!",
-                            );
+                                internetIcon: internetIcon(),
+                                message: "There is no Internet Connection!"
+                                //message: "Copied Successfully!",
+                                );
                             // ScaffoldMessenger.of(context)
                             //     .showSnackBar(SnackBarWidget.snackBarForCopy());
                           },
