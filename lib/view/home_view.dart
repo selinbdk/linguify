@@ -43,51 +43,52 @@ class _HomeViewState extends State<HomeView> {
       body: SafeArea(
         child: Padding(
           padding: AppPadding.pagePadding,
-          child: Column(
-            children: [
-              //* Logo
-              SizedBox(
-                height: 200,
-                child: Image.asset(
-                  "/Users/sedat/Desktop/selin/linguify/assets/images/linguify_logo.jpeg",
-                ),
-              ),
-
-              AppSpacing.smallVerticalSpace,
-
-              //* Input Field
-              SizedBox(
-                height: 175,
-                child: Form(
-                  key: _formKey,
-                  child: TextBoxWidget(
-                    formKey: _formKey,
-                    validateDigit: validateDigit,
-                    controller: inputController,
-                    hintText: "Start translation",
-                    hasClearButton: true,
+          child: Form(
+            key:_formKey,
+            child: Column(
+              children: [
+                //* Logo
+                SizedBox(
+                  height: 200,
+                  child: Image.asset(
+                    "/Users/sedat/Desktop/selin/linguify/assets/images/linguify_logo.jpeg",
                   ),
                 ),
-              ),
-
-              const Divider(
-                height: 40,
-                thickness: 1,
-                color: AppColors.dividerColor,
-              ),
-
-              //* Output Field
-              SizedBox(
-                height: 175,
-                child: TextBoxWidget(
-                  controller: outputController,
-                  hintText: "Output",
-                  hasCopyButton: true,
+          
+                AppSpacing.smallVerticalSpace,
+          
+                //* Input Field
+                SizedBox(
+                  height: 175,
+                    child: TextBoxWidget(
+                      formKey: _formKey,
+                      validateDigit: validateDigit,
+                      controller: inputController,
+                      hintText: "Start translation",
+                      hasClearButton: true,
+                    ),
+                  ),
+                
+          
+                const Divider(
+                  height: 40,
+                  thickness: 1,
+                  color: AppColors.dividerColor,
                 ),
-              ),
-
-            
-            ],
+          
+                //* Output Field
+                SizedBox(
+                  height: 175,
+                  child: TextBoxWidget(
+                    controller: outputController,
+                    hintText: "Output",
+                    hasCopyButton: true,
+                  ),
+                ),
+          
+              
+              ],
+            ),
           ),
         ),
       ),
