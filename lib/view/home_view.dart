@@ -18,6 +18,8 @@ class _HomeViewState extends State<HomeView> {
 
   final _formKey = GlobalKey<FormState>();
 
+  bool isDisable= false;
+
   Widget internetIcon() {
     return const Icon(
       Icons.signal_wifi_statusbar_connected_no_internet_4_sharp,
@@ -37,19 +39,24 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
-
   bool isDisabledButton(TextEditingController inputController) {
-    if (validateDigit(inputController.text)!=null) {
+    if (validateDigit(inputController.text) != null) {
       return true;
     }
     return false;
   }
 
-
   @override
   void initState() {
     inputController = TextEditingController();
     outputController = TextEditingController();
+    
+    inputController.addListener(() { 
+      setState(() {
+      isDisable= isDisabledButton(inputController);
+    });
+      
+    });
     super.initState();
   }
 
@@ -105,8 +112,8 @@ class _HomeViewState extends State<HomeView> {
                 AppSpacing.largeVerticalSpace,
 
                 TranslateButton(
-                  inputController: inputController,
-                  isDisabledButton: isDisabledButton,
+                  onPressed:
+                      isDisable == true ? null : () {},
                   message: "Translate",
                 ),
               ],
