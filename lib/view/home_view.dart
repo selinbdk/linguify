@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linguify/core/components/text_box_widget.dart';
+import 'package:linguify/core/components/translate_button.dart';
 import 'package:linguify/theme/app_theme.dart';
 
 class HomeView extends StatefulWidget {
@@ -17,6 +18,13 @@ class _HomeViewState extends State<HomeView> {
 
   final _formKey = GlobalKey<FormState>();
 
+  Widget internetIcon() {
+    return const Icon(
+      Icons.signal_wifi_statusbar_connected_no_internet_4_sharp,
+      color: AppColors.labelColor,
+    );
+  }
+
   String? validateDigit(String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter text";
@@ -28,6 +36,15 @@ class _HomeViewState extends State<HomeView> {
       return null;
     }
   }
+
+
+  bool isDisabledButton(TextEditingController inputController) {
+    if (validateDigit(inputController.text)!=null) {
+      return true;
+    }
+    return false;
+  }
+
 
   @override
   void initState() {
@@ -44,7 +61,7 @@ class _HomeViewState extends State<HomeView> {
         child: Padding(
           padding: AppPadding.pagePadding,
           child: Form(
-            key:_formKey,
+            key: _formKey,
             child: Column(
               children: [
                 //* Logo
@@ -54,28 +71,27 @@ class _HomeViewState extends State<HomeView> {
                     "/Users/sedat/Desktop/selin/linguify/assets/images/linguify_logo.jpeg",
                   ),
                 ),
-          
+
                 AppSpacing.smallVerticalSpace,
-          
+
                 //* Input Field
                 SizedBox(
                   height: 175,
-                    child: TextBoxWidget(
-                      formKey: _formKey,
-                      validateDigit: validateDigit,
-                      controller: inputController,
-                      hintText: "Start translation",
-                      hasClearButton: true,
-                    ),
+                  child: TextBoxWidget(
+                    formKey: _formKey,
+                    validateDigit: validateDigit,
+                    controller: inputController,
+                    hintText: "Start translation",
+                    hasClearButton: true,
                   ),
-                
-          
+                ),
+
                 const Divider(
                   height: 40,
                   thickness: 1,
                   color: AppColors.dividerColor,
                 ),
-          
+
                 //* Output Field
                 SizedBox(
                   height: 175,
@@ -85,8 +101,14 @@ class _HomeViewState extends State<HomeView> {
                     hasCopyButton: true,
                   ),
                 ),
-          
-              
+                AppSpacing.largeVerticalSpace,
+                AppSpacing.largeVerticalSpace,
+
+                TranslateButton(
+                  inputController: inputController,
+                  isDisabledButton: isDisabledButton,
+                  message: "Translate",
+                ),
               ],
             ),
           ),
