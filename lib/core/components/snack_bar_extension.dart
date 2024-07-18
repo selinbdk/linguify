@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:linguify/theme/app_theme.dart';
 
 extension SnackbarManager on BuildContext {
+
   void showSuccessMessage() {}
 
   void showInfoMessage({required String message}) {
@@ -14,45 +15,35 @@ extension SnackbarManager on BuildContext {
   }
 
   //*
-  void showErrorMessage({
-    required String message,
-    Widget? internetIcon,
+  void showErrorMessage(
+    {required String message,
+    Widget? errorIcon,
     void Function()? onRetryAction,
-  }) {
-    if (onRetryAction == null) {
-      final snackbar = SnackBar(
-        duration: const Duration(seconds: 8),
-        content: Row(
-          children: [
-            internetIcon ?? const SizedBox.shrink(),
-            AppSpacing.smallHorizontalSpace,
-            Text(message),
-          ],
-        ),
-        backgroundColor: AppColors.focusedErrorBorder,
-      );
-      ScaffoldMessenger.of(this).showSnackBar(snackbar);
-    } 
-    else {
-      final snackbar = SnackBar(
-        duration: const Duration(seconds: 8),
-        content: Row(
-          children: [
-            internetIcon ?? const SizedBox.shrink(),
-            AppSpacing.smallHorizontalSpace,
-            Text(message),
-          ],
-        ),
-        backgroundColor: AppColors.focusedErrorBorder,
-        action: SnackBarAction(
-          //backgroundColor: AppColors.dividerColor,
-          label: "Retry",
-          textColor: AppColors.labelColor,
-          onPressed: () => (),
-        ),
-      );
-        ScaffoldMessenger.of(this).showSnackBar(snackbar);
+    
+    }) {
+    final snackbar = SnackBar(
+      duration: const Duration(seconds: 8),
+      content: Row(
+        children: [
+
+          errorIcon ?? const SizedBox.shrink(),
       
-    }
+
+          AppSpacing.smallHorizontalSpace,
+    
+          Text(message),
+      ],
+      ),
+      backgroundColor: AppColors.focusedErrorBorder,
+      action: onRetryAction!=null ? SnackBarAction(
+        //backgroundColor: AppColors.dividerColor,
+        label: "Retry",
+        textColor: AppColors.labelColor,
+        onPressed: () => (),
+      ): null
+      
+    );
+    
+    ScaffoldMessenger.of(this).showSnackBar(snackbar);
   }
 }
