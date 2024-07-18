@@ -1,64 +1,14 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:linguify/core/components/text_box_widget.dart';
+import 'package:linguify/core/components/text_box/text_box_widget.dart';
 import 'package:linguify/core/components/translate_button.dart';
+import 'package:linguify/core/providers/validation_provider.dart';
 import 'package:linguify/theme/app_theme.dart';
+import 'package:provider/provider.dart';
 
-class HomeView extends StatefulWidget {
+class HomeView extends StatelessWidget {
   const HomeView({super.key});
-
-  @override
-  State<HomeView> createState() => _HomeViewState();
-}
-
-//* FormKey
-class _HomeViewState extends State<HomeView> {
-  late final TextEditingController inputController;
-
-  late final TextEditingController outputController;
-
-  final _formKey = GlobalKey<FormState>();
-
-  bool isDisable= false;
-
-  Widget internetIcon() {
-    return const Icon(
-      Icons.signal_wifi_statusbar_connected_no_internet_4_sharp,
-      color: AppColors.labelColor,
-    );
-  }
-
-  String? validateDigit(String? value) {
-    if (value == null || value.isEmpty) {
-      return "Please enter text";
-    } else if (value.length < 2) {
-      return "Please enter text of more than 2 characters.";
-    } else if (value.length > 50) {
-      return "Please enter text of less than 50 characters";
-    } else {
-      return null;
-    }
-  }
-
-  bool isDisabledButton(TextEditingController inputController) {
-    if (validateDigit(inputController.text) != null) {
-      return true;
-    }
-    return false;
-  }
-
-  @override
-  void initState() {
-    inputController = TextEditingController();
-    outputController = TextEditingController();
-    
-    inputController.addListener(() { 
-      setState(() {
-      isDisable= isDisabledButton(inputController);
-    });
-      
-    });
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,57 +17,62 @@ class _HomeViewState extends State<HomeView> {
       body: SafeArea(
         child: Padding(
           padding: AppPadding.pagePadding,
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                //* Logo
-                SizedBox(
-                  height: 200,
-                  child: Image.asset(
-                    "/Users/sedat/Desktop/selin/linguify/assets/images/linguify_logo.jpeg",
-                  ),
-                ),
+          child: Consumer<ValidationProvider>(
+            builder: (_, provider, ___) {
+              return Form(
+                key: provider.formKey,
+                child: Column(
+                  children: [
+                    //* Logo
+                    SizedBox(
+                      height: 200,
+                      child: Image.asset(
+                        "/Users/sedat/Desktop/selin/linguify/assets/images/linguify_logo.jpeg",
+                      ),
+                    ),
 
-                AppSpacing.smallVerticalSpace,
+                    AppSpacing.smallVerticalSpace,
 
-                //* Input Field
-                SizedBox(
-                  height: 175,
-                  child: TextBoxWidget(
-                    formKey: _formKey,
-                    validateDigit: validateDigit,
-                    controller: inputController,
-                    hintText: "Start translation",
-                    hasClearButton: true,
-                  ),
-                ),
+                    //* Input Field
+                    SizedBox(
+                      height: 175,
+                      child: TextBoxWidget.withClear(
+                        onChanged: (_) {
+                          log('object');
 
-                const Divider(
-                  height: 40,
-                  thickness: 1,
-                  color: AppColors.dividerColor,
-                ),
+                          provider.validateForm();
+                        },
+                        controller: provider.inputController,
+                        validator: provider.validateInputText,
+                        hintText: "Start translation",
+                      ),
+                    ),
 
-                //* Output Field
-                SizedBox(
-                  height: 175,
-                  child: TextBoxWidget(
-                    controller: outputController,
-                    hintText: "Output",
-                    hasCopyButton: true,
-                  ),
-                ),
-                AppSpacing.largeVerticalSpace,
-                AppSpacing.largeVerticalSpace,
+                    const Divider(
+                      height: 40,
+                      thickness: 1,
+                      color: AppColors.dividerColor,
+                    ),
 
-                TranslateButton(
-                  onPressed:
-                      isDisable == true ? null : () {},
-                  message: "Translate",
+                    //* Output Field
+                    SizedBox(
+                      height: 175,
+                      child: TextBoxWidget.withCopy(
+                        controller: provider.outputController,
+                        hintText: "Output",
+                      ),
+                    ),
+
+                    AppSpacing.megaLargeVertical,
+
+                    TranslateButton(
+                      onPressed: provider.isDisable == true ? null : () {},
+                      message: "Translate",
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              );
+            },
           ),
         ),
       ),

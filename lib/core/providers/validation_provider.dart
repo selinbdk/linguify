@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 class ValidationProvider extends ChangeNotifier {
-  TextEditingController controller = TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  TextEditingController inputController = TextEditingController();
+  TextEditingController outputController = TextEditingController();
+
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool isDisable = true;
 
   String? _validationForEmpty(String? value) {
@@ -31,22 +33,23 @@ class ValidationProvider extends ChangeNotifier {
 
   String? validateInputText(String? value) {
     if (value == null || value.isEmpty) {
-      return _validationForEmpty(controller.text);
+      return _validationForEmpty(inputController.text);
     } else if (value.length < 2) {
-      return _validationForTwo(controller.text);
+      return _validationForTwo(inputController.text);
     } else if (value.length > 50) {
-      return _validationForFifty(controller.text);
+      return _validationForFifty(inputController.text);
     } else {
       return null;
     }
   }
 
-  void isDisabled() {
-    if (_formKey.currentState?.validate() ?? false) {
+  void validateForm() {
+    if (formKey.currentState?.validate() ?? false) {
       isDisable = false;
     } else {
       isDisable = true;
     }
-    notifyListeners(); //* 
+
+    notifyListeners();
   }
 }
