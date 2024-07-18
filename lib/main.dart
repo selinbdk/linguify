@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:linguify/core/providers/validation_provider.dart';
+import 'package:provider/provider.dart';
 
 import 'view/home_view.dart';
 //import 'package:provider/provider.dart';
@@ -13,8 +15,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: HomeView(),
+    return ChangeNotifierProvider(
+      create: (context) => ValidationProvider(),
+      child: const MaterialApp(
+        home: HomeView(),
+      ),
     );
   }
 }
