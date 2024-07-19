@@ -9,8 +9,8 @@ import 'package:linguify/core/components/buttons/translate_button.dart';
 import 'package:linguify/core/components/snackbar/snack_bar_extension.dart';
 import 'package:linguify/core/components/text_box/text_box_widget.dart';
 import 'package:linguify/core/constants/image_constants.dart';
-import 'package:linguify/core/providers/validation_provider.dart';
 import 'package:linguify/core/providers/translation_provider.dart';
+import 'package:linguify/core/providers/validation_provider.dart';
 import 'package:linguify/theme/app_theme.dart';
 import 'package:provider/provider.dart';
 
@@ -82,7 +82,44 @@ class HomeView extends StatelessWidget {
                     ),
                     const Spacer(flex: 2),
 
-              
+                    //* Selection Buttons
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Consumer<TranslationProvider>(
+                          builder: (_, provider, ___) {
+                            return SelectionButton(
+                              result: provider.currentForInput,
+                              onChanged: (String? newLanguage) {
+                                if (newLanguage != null) {
+                                  provider.inputCurrentLanguage(newLanguage);
+                                }
+                              },
+                            );
+                          },
+                        ),
+
+                        const Text("to",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.dividerColor,
+                        ),
+                        ),
+                        Consumer<TranslationProvider>(
+                          builder: (_, provider, ___) {
+                            return SelectionButton(
+                              result: provider.currentForOutput,
+                              onChanged: (String? newLanguage) {
+                                if (newLanguage != null) {
+                                  provider.outputCurrentLanguage(newLanguage);
+                                }
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+
                     SizedBox(
                       width: MediaQuery.of(context).size.width,
                       height: 75,
@@ -92,12 +129,6 @@ class HomeView extends StatelessWidget {
                       ),
                     ),
                     const Spacer(),
-
-
-                  
-
-
-
                   ],
                 ),
               );
