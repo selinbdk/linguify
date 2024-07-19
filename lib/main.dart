@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:linguify/core/providers/translation_provider.dart';
 import 'package:linguify/core/providers/validation_provider.dart';
+import 'package:linguify/view/splash_view.dart';
 import 'package:provider/provider.dart';
-
-import 'view/home_view.dart';
 //import 'package:provider/provider.dart';
 
 void main() {
@@ -15,10 +15,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => ValidationProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ValidationProvider()),
+        ChangeNotifierProvider(create: (context) => TranslationProvider()),
+      ],
       child: const MaterialApp(
-        home: HomeView(),
+        home: SplashView(),
       ),
     );
   }
