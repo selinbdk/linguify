@@ -1,52 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:linguify/core/components/snack_bar_extension.dart';
-import 'package:linguify/core/providers/validation_provider.dart';
 import 'package:linguify/theme/app_theme.dart';
-import 'package:provider/provider.dart';
-
-part 'clear_button.dart';
-part 'copy_button.dart';
 
 class TextBoxWidget extends StatelessWidget {
   const TextBoxWidget({
     super.key,
     required this.controller,
+    this.suffix,
     this.hintText,
     this.validator,
     this.onChanged,
-  })  : _hasClearButton = false,
-        _hasCopyButton = false;
+    required this.readOnly,
+  });
 
-  const TextBoxWidget.withCopy({
-    super.key,
-    required this.controller,
-    this.hintText,
-    this.validator,
-    this.onChanged,
-  })  : _hasClearButton = false,
-        _hasCopyButton = true;
-
-  const TextBoxWidget.withClear({
-    super.key,
-    required this.controller,
-    this.hintText,
-    this.validator,
-    this.onChanged,
-  })  : _hasClearButton = true,
-        _hasCopyButton = false;
-
+  final Widget? suffix;
   final String? hintText;
   final TextEditingController controller;
   final String? Function(String?)? validator;
   final void Function(String)? onChanged;
-
-  final bool _hasClearButton;
-  final bool _hasCopyButton;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      readOnly: readOnly,
       controller: controller,
       validator: validator,
       onChanged: onChanged,
@@ -65,11 +42,7 @@ class TextBoxWidget extends StatelessWidget {
           bottom: 0,
           top: 36,
         ),
-        suffixIcon: switch ((_hasClearButton, _hasCopyButton)) {
-          (true, false) => _ClearButton(controller),
-          (false, true) => _CopyButton(controller),
-          (_, _) => const SizedBox.shrink(),
-        },
+        suffixIcon: suffix,
         hintText: hintText,
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(
