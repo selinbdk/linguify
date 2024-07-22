@@ -9,6 +9,7 @@ import 'package:linguify/core/components/buttons/translate_button.dart';
 import 'package:linguify/core/components/snackbar/snack_bar_extension.dart';
 import 'package:linguify/core/components/text_box/text_box_widget.dart';
 import 'package:linguify/core/constants/image_constants.dart';
+import 'package:linguify/core/models/response/language_listings/language_model.dart';
 import 'package:linguify/core/providers/translation_provider.dart';
 import 'package:linguify/core/providers/validation_provider.dart';
 import 'package:linguify/theme/app_theme.dart';
@@ -25,15 +26,18 @@ class HomeView extends StatelessWidget {
         child: Padding(
           padding: AppPadding.pagePadding,
           child: Consumer<ValidationProvider>(
-            builder: (_, provider, ___) {
+            builder: (_, validationProvider, ___) {
               return Form(
-                key: provider.formKey,
+                key: validationProvider.formKey,
                 child: Column(
                   children: [
                     //* Logo
-                    SizedBox(
-                      height: 200,
-                      child: Image.asset(ImageConstants.appIconPath),
+                    Hero(
+                      tag: "linguifyLogo",
+                      child: SizedBox(
+                        height: 200,
+                        child: Image.asset(ImageConstants.appIconPath),
+                      ),
                     ),
 
                     AppSpacing.smallVerticalSpace,
@@ -43,14 +47,14 @@ class HomeView extends StatelessWidget {
                       height: 175,
                       child: TextBoxWidget(
                         readOnly: false,
-                        onChanged: (_) => provider.validateForm(),
-                        controller: provider.inputController,
-                        validator: provider.validateInputText,
+                        onChanged: (_) => validationProvider.validateForm(),
+                        controller: validationProvider.inputController,
+                        validator: validationProvider.validateInputText,
                         hintText: "Start translation",
                         suffix: ClearButton(
                           onPressed: () {
-                            provider.inputController.clear();
-                            provider.validateForm();
+                            validationProvider.inputController.clear();
+                            validationProvider.validateForm();
                           },
                         ),
                       ),
@@ -67,12 +71,13 @@ class HomeView extends StatelessWidget {
                       height: 175,
                       child: TextBoxWidget(
                         readOnly: true,
-                        controller: provider.outputController,
+                        controller: validationProvider.outputController,
                         hintText: "Output",
                         suffix: CopyButton(
                           onPressed: () async {
                             await Clipboard.setData(ClipboardData(
-                                text: provider.outputController.text));
+                                text:
+                                    validationProvider.outputController.text));
                             context.showInfoMessage(
                               message: "Copied Successfully!",
                             );
@@ -88,30 +93,38 @@ class HomeView extends StatelessWidget {
                       children: [
                         Consumer<TranslationProvider>(
                           builder: (_, provider, ___) {
-                            return SelectionButton(
+                            return SelectionButton<LanguageModel?>(
+                              itemList: provider.languageList,
+                              texts: provider.languageList
+                                  ?.map((e) => e?.displayName ?? '')
+                                  .toList(),
                               result: provider.currentForInput,
-                              onChanged: (String? newLanguage) {
+                              onChanged: (LanguageModel? newLanguage) {
                                 if (newLanguage != null) {
-                                  provider.inputCurrentLanguage(newLanguage);
+                                  provider.changeInputLanguage(newLanguage);
                                 }
                               },
                             );
                           },
                         ),
-
-                        const Text("to",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.dividerColor,
-                        ),
+                        const Text(
+                          "to",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.dividerColor,
+                          ),
                         ),
                         Consumer<TranslationProvider>(
                           builder: (_, provider, ___) {
-                            return SelectionButton(
+                            return SelectionButton<LanguageModel?>(
+                              itemList: provider.languageList,
+                              texts: provider.languageList
+                                  ?.map((e) => e?.displayName ?? '')
+                                  .toList(),
                               result: provider.currentForOutput,
-                              onChanged: (String? newLanguage) {
+                              onChanged: (LanguageModel? newLanguage) {
                                 if (newLanguage != null) {
-                                  provider.outputCurrentLanguage(newLanguage);
+                                  provider.changeOutputLanguage(newLanguage);
                                 }
                               },
                             );
@@ -120,11 +133,25 @@ class HomeView extends StatelessWidget {
                       ],
                     ),
 
+                    //* Translate Button
                     SizedBox(
                       width: MediaQuery.of(context).size.width,
                       height: 75,
                       child: TranslateButton(
-                        onPressed: provider.isDisable == true ? null : () {},
+                        onPressed: validationProvider.isDisable == true
+                            ? null
+                            : () {
+                                print(context
+                                    .read<TranslationProvider>()
+                                    .currentForInput
+                                    ?.displayName
+                                    .toString());
+                                print(context
+                                    .read<TranslationProvider>()
+                                    .currentForOutput
+                                    ?.displayName
+                                    .toString());
+                              },
                         message: "Translate",
                       ),
                     ),
