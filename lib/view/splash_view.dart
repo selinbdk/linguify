@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:linguify/core/constants/image_constants.dart';
+import 'package:linguify/core/providers/translation_provider.dart';
+import 'package:linguify/core/repository/repository.dart';
 import 'package:linguify/theme/app_theme.dart';
 import 'package:linguify/view/home_view.dart';
+import 'package:provider/provider.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -15,22 +18,21 @@ class _SplashViewState extends State<SplashView> {
   void initState() {
     //todo(selin): burada repoya istek atılacak
 
-    Future.delayed(
-      const Duration(seconds: 1),
-      () async {
+    TranslationRepository().getLanguageList().then(
+      (languageModel) async {
+        final provider = context.read<TranslationProvider>();
+
+        provider.languageList?.addAll(languageModel.languages ?? []);
+
+        provider.changeInputLanguage(languageModel.languages?.first);
+        provider.changeOutputLanguage(languageModel.languages?.first);
+
         await Navigator.of(context).pushReplacement(
           PageRouteBuilder(
             transitionDuration: const Duration(seconds: 1),
             pageBuilder: (_, __, ___) => const HomeView(),
-            transitionsBuilder: (_, animation, __, child) {
-              return FadeTransition(
-                opacity: animation,
-                child: child,
-              );
-            },
           ),
         );
-        //* Hero
       },
     );
 
@@ -42,7 +44,10 @@ class _SplashViewState extends State<SplashView> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: Center(
-        child: Image.asset(ImageConstants.appIconPath),
+        child: Hero(
+          tag: "linguifyLogo",
+          child: Image.asset(ImageConstants.appIconPath),
+        ),
       ),
     );
   }
