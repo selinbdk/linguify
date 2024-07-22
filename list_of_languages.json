@@ -1,0 +1,10 @@
+{
+    "languages": [
+    {
+        "display_name": "German",
+        "language_code": "de",
+        "support_source": true,
+        "support_target": true
+    }
+    ]
+}

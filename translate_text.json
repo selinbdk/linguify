@@ -1,0 +1,16 @@
+{
+    "from": "en",
+    "texts": [
+        "Hello World",
+        "Good Morning"
+    ],
+    "to": [
+        "de",
+        "es"
+    ]
+}
+
+
+
+
+
