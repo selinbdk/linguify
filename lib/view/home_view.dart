@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:linguify/core/components/buttons/clear_button.dart';
@@ -12,6 +13,7 @@ import 'package:linguify/core/constants/image_constants.dart';
 import 'package:linguify/core/models/response/language_listings/language_model.dart';
 import 'package:linguify/core/providers/translation_provider.dart';
 import 'package:linguify/core/providers/validation_provider.dart';
+import 'package:linguify/core/repository/repository.dart';
 import 'package:linguify/theme/app_theme.dart';
 import 'package:provider/provider.dart';
 
@@ -47,7 +49,39 @@ class HomeView extends StatelessWidget {
                       height: 175,
                       child: TextBoxWidget(
                         readOnly: false,
-                        onChanged: (_) => validationProvider.validateForm(),
+                        onChanged: (text) {
+                          EasyDebounce.debounce(
+                            'my-debouncer', // <-- An ID for this particular debouncer
+                            const Duration(
+                              milliseconds: 500,
+                            ), // <-- The debounce duration
+                            () {
+                              if (text.length > 2 && text.length < 50) {
+                                print('object');
+                                TranslationRepository()
+                                    .detectLanguage(text)
+                                    .then(
+                                  (detectLanguageResultModel) {
+                                    final provider =
+                                        context.read<TranslationProvider>();
+
+                                    final detectedLanguage =
+                                        provider.languageList?.firstWhere((e) =>
+                                            detectLanguageResultModel
+                                                .detectedLanguages
+                                                ?.contains(e?.languageCode) ??
+                                            false);
+
+                                    provider.detectedLanguage =
+                                        detectedLanguage;
+                                  },
+                                );
+                              }
+                            },
+                          );
+
+                          validationProvider.validateForm();
+                        },
                         controller: validationProvider.inputController,
                         validator: validationProvider.validateInputText,
                         hintText: "Start translation",
@@ -88,49 +122,53 @@ class HomeView extends StatelessWidget {
                     const Spacer(flex: 2),
 
                     //* Selection Buttons
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Consumer<TranslationProvider>(
-                          builder: (_, provider, ___) {
-                            return SelectionButton<LanguageModel?>(
-                              itemList: provider.languageList,
-                              texts: provider.languageList
-                                  ?.map((e) => e?.displayName ?? '')
-                                  .toList(),
-                              result: provider.currentForInput,
-                              onChanged: (LanguageModel? newLanguage) {
-                                if (newLanguage != null) {
-                                  provider.changeInputLanguage(newLanguage);
-                                }
-                              },
-                            );
-                          },
-                        ),
-                        const Text(
-                          "to",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.dividerColor,
+                    FittedBox(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Consumer<TranslationProvider>(
+                            builder: (_, provider, ___) {
+                              return SelectionButton<LanguageModel?>(
+                                itemList: provider.languageList,
+                                texts: provider.languageList
+                                    ?.map((e) => e?.displayName ?? '')
+                                    .toList(),
+                                result: provider.currentForInput,
+                                onChanged: (LanguageModel? newLanguage) {
+                                  if (newLanguage != null) {
+                                    provider.changeInputLanguage(newLanguage);
+                                  }
+                                },
+                              );
+                            },
                           ),
-                        ),
-                        Consumer<TranslationProvider>(
-                          builder: (_, provider, ___) {
-                            return SelectionButton<LanguageModel?>(
-                              itemList: provider.languageList,
-                              texts: provider.languageList
-                                  ?.map((e) => e?.displayName ?? '')
-                                  .toList(),
-                              result: provider.currentForOutput,
-                              onChanged: (LanguageModel? newLanguage) {
-                                if (newLanguage != null) {
-                                  provider.changeOutputLanguage(newLanguage);
-                                }
-                              },
-                            );
-                          },
-                        ),
-                      ],
+                          AppSpacing.smallHorizontalSpace,
+                          const Text(
+                            "to",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.dividerColor,
+                            ),
+                          ),
+                          AppSpacing.smallHorizontalSpace,
+                          Consumer<TranslationProvider>(
+                            builder: (_, provider, ___) {
+                              return SelectionButton<LanguageModel?>(
+                                itemList: provider.languageList,
+                                texts: provider.languageList
+                                    ?.map((e) => e?.displayName ?? '')
+                                    .toList(),
+                                result: provider.currentForOutput,
+                                onChanged: (LanguageModel? newLanguage) {
+                                  if (newLanguage != null) {
+                                    provider.changeOutputLanguage(newLanguage);
+                                  }
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     ),
 
                     //* Translate Button
