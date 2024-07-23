@@ -26,7 +26,6 @@ class TranslationRepository {
 
       return languageModel;
     } on Exception catch (e) {
-      print(e);
       rethrow;
     }
   }
@@ -51,7 +50,6 @@ class TranslationRepository {
 
       return detectLanguageResultModel;
     } on Exception catch (e) {
-      print('object');
       print(e);
 
       rethrow;
