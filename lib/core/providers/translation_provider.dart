@@ -3,9 +3,28 @@ import 'package:linguify/core/models/request/translate_request_model/translate_r
 import 'package:linguify/core/models/response/language_listings/language_model.dart';
 
 class TranslationProvider extends ChangeNotifier {
-  LanguageModel? currentForInput;
-  LanguageModel? currentForOutput;
-  LanguageModel? detectedLanguage;
+  LanguageModel? _currentForInput;
+  LanguageModel? _currentForOutput;
+  LanguageModel? _detectedLanguage;
+
+  LanguageModel? get detectedLanguage => _detectedLanguage;
+  LanguageModel? get currentForOutput => _currentForOutput;
+  LanguageModel? get currentForInput => _currentForInput;
+
+  set currentForInput(LanguageModel? languageModel) {
+    _currentForInput = languageModel;
+    notifyListeners();
+  }
+
+  set currentForOutput(LanguageModel? languageModel) {
+    _currentForOutput = languageModel;
+    notifyListeners();
+  }
+
+  set detectedLanguage(LanguageModel? languageModel) {
+    _detectedLanguage = languageModel;
+    notifyListeners();
+  }
 
   final List<LanguageModel?>? languageList = [];
 
@@ -13,30 +32,15 @@ class TranslationProvider extends ChangeNotifier {
 
   void changeInputLanguage(LanguageModel? newInputLanguage) {
     if (newInputLanguage == null) return;
-
-    currentForInput = newInputLanguage;
+    _detectedLanguage = newInputLanguage;
+    _currentForInput = newInputLanguage;
     notifyListeners();
   }
 
   void changeOutputLanguage(LanguageModel? newOutputLanguage) {
     if (newOutputLanguage == null) return;
 
-    currentForOutput = newOutputLanguage;
+    _currentForOutput = newOutputLanguage;
     notifyListeners();
   }
-
-  // void addToLanguageList(LanguageModel languageModel) {
-  //   languageList.addAll(languageModel);
-  //   notifyListeners();
-  // }
-
-  // void addForDetectingLanguage(DetectLanguageResultModel? detectLanguageModel) {
-  //   detectedLanguageList.add(detectLanguageModel);
-  //   notifyListeners();
-  // }
-
-  // void addForTranslateList(TranslateRequestModel? translateRequestModel) {
-  //   translatedTextList.add(translateRequestModel);
-  //   notifyListeners();
-  // }
 }

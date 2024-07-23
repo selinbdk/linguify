@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:developer';
+
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -55,32 +57,28 @@ class HomeView extends StatelessWidget {
                             const Duration(
                               milliseconds: 500,
                             ), // <-- The debounce duration
-                            () {
+                            () async {
                               if (text.length > 2 && text.length < 50) {
-                                print('object');
-                                TranslationRepository()
-                                    .detectLanguage(text)
-                                    .then(
-                                  (detectLanguageResultModel) {
-                                    final provider =
-                                        context.read<TranslationProvider>();
+                                final detectLanguageResultModel =
+                                    await TranslationRepository()
+                                        .detectLanguage(text);
 
-                                    final detectedLanguage =
-                                        provider.languageList?.firstWhere((e) =>
-                                            detectLanguageResultModel
-                                                .detectedLanguages
-                                                ?.contains(e?.languageCode) ??
-                                            false);
+                                final provider =
+                                    context.read<TranslationProvider>();
 
-                                    provider.detectedLanguage =
-                                        detectedLanguage;
-                                  },
-                                );
+                                final detectedLanguage = provider.languageList
+                                    ?.firstWhere((e) =>
+                                        detectLanguageResultModel
+                                            .detectedLanguages
+                                            ?.contains(e?.languageCode) ??
+                                        false);
+
+                                provider.detectedLanguage = detectedLanguage;
+
+                                validationProvider.validateForm();
                               }
                             },
                           );
-
-                          validationProvider.validateForm();
                         },
                         controller: validationProvider.inputController,
                         validator: validationProvider.validateInputText,
@@ -128,12 +126,14 @@ class HomeView extends StatelessWidget {
                         children: [
                           Consumer<TranslationProvider>(
                             builder: (_, provider, ___) {
+                              log('sacsd');
                               return SelectionButton<LanguageModel?>(
                                 itemList: provider.languageList,
                                 texts: provider.languageList
                                     ?.map((e) => e?.displayName ?? '')
                                     .toList(),
-                                result: provider.currentForInput,
+                                result: provider.detectedLanguage,
+          
                                 onChanged: (LanguageModel? newLanguage) {
                                   if (newLanguage != null) {
                                     provider.changeInputLanguage(newLanguage);
@@ -156,8 +156,9 @@ class HomeView extends StatelessWidget {
                               return SelectionButton<LanguageModel?>(
                                 itemList: provider.languageList,
                                 texts: provider.languageList
-                                    ?.map((e) => e?.displayName ?? '')
+                                    ?.map((e) => e?.displayName ?? "")
                                     .toList(),
+                          
                                 result: provider.currentForOutput,
                                 onChanged: (LanguageModel? newLanguage) {
                                   if (newLanguage != null) {
@@ -179,16 +180,16 @@ class HomeView extends StatelessWidget {
                         onPressed: validationProvider.isDisable == true
                             ? null
                             : () {
-                                print(context
+                                context
                                     .read<TranslationProvider>()
                                     .currentForInput
                                     ?.displayName
-                                    .toString());
-                                print(context
+                                    .toString();
+                                context
                                     .read<TranslationProvider>()
                                     .currentForOutput
                                     ?.displayName
-                                    .toString());
+                                    .toString();
                               },
                         message: "Translate",
                       ),
