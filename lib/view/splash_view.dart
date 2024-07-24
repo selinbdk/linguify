@@ -27,12 +27,14 @@ class _SplashViewState extends State<SplashView> {
         provider.changeInputLanguage(languageModel.languages?.first);
         provider.changeOutputLanguage(languageModel.languages?.first);
 
-        await Navigator.of(context).pushReplacement(
-          PageRouteBuilder(
-            transitionDuration: const Duration(seconds: 1),
-            pageBuilder: (_, __, ___) => const HomeView(),
-          ),
-        );
+        Future.delayed(const Duration(seconds: 1), () async {
+          await Navigator.of(context).pushReplacement(
+            PageRouteBuilder(
+              transitionDuration: const Duration(seconds: 1),
+              pageBuilder: (_, __, ___) => const HomeView(),
+            ),
+          );
+        });
       },
     );
 
