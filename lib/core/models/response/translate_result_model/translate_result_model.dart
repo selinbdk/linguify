@@ -22,4 +22,5 @@ class TranslateResultModel {
   }
 
   Map<String, dynamic> toJson() => _$TranslateResultModelToJson(this);
+  
 }

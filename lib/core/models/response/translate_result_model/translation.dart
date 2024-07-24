@@ -14,4 +14,5 @@ class Translation {
   }
 
   Map<String, dynamic> toJson() => _$TranslationToJson(this);
+  
 }

@@ -1,15 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:linguify/core/models/request/translate_request_model/translate_request_model.dart';
 import 'package:linguify/core/models/response/language_listings/language_model.dart';
+import 'package:linguify/core/models/response/translate_result_model/translate_result_model.dart';
+import 'package:linguify/core/models/response/translate_result_model/translation.dart';
 
 class TranslationProvider extends ChangeNotifier {
   LanguageModel? _currentForInput;
   LanguageModel? _currentForOutput;
   LanguageModel? _detectedLanguage;
+  bool click = false;
+
+
+  final List<LanguageModel?>? languageList = [];
+
+  List<Translation?>? translationsList = [];
+
+
 
   LanguageModel? get detectedLanguage => _detectedLanguage;
   LanguageModel? get currentForOutput => _currentForOutput;
   LanguageModel? get currentForInput => _currentForInput;
+
+
+
+
+  void toggleClick() {
+    click = !click;
+    notifyListeners();
+  }
 
   set currentForInput(LanguageModel? languageModel) {
     _currentForInput = languageModel;
@@ -26,9 +44,6 @@ class TranslationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  final List<LanguageModel?>? languageList = [];
-
-  final List<TranslateRequestModel?>? translatedTextList = [];
 
   void changeInputLanguage(LanguageModel? newInputLanguage) {
     if (newInputLanguage == null) return;

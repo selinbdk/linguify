@@ -4,6 +4,7 @@ import 'package:linguify/core/constants/app_constants.dart';
 import 'package:linguify/core/models/request/translate_request_model/translate_request_model.dart';
 import 'package:linguify/core/models/response/detect_language_result_model/detect_language_result_model.dart';
 import 'package:linguify/core/models/response/language_listings/language_listings_model.dart';
+import 'package:linguify/core/models/response/translate_result_model/translate_result_model.dart';
 import 'package:linguify/core/utils/json_reader.dart';
 
 class TranslationRepository {
@@ -57,9 +58,14 @@ class TranslationRepository {
   }
 
   //*Translate text
-  Future<TranslateRequestModel> translateText() async {
+  Future<TranslateResultModel> translateText(String userText, String? languageCode) async {
     final response = await Dio().post(
       AppConstants.baseUrl + ApiConstants.translateTextPath,
+      data:{
+        "texts":[userText],
+        "to":[languageCode],
+
+      },
       options: Options(
         headers: {'X-API-Key': AppConstants.apiToken},
       ),
@@ -67,9 +73,12 @@ class TranslationRepository {
 
     final data = response.data;
 
-    final translateRequestModel =
-        TranslateRequestModel.fromJson(data as Map<String, dynamic>);
+    final translateResultModel =
+        TranslateResultModel.fromJson(data as Map<String, dynamic>);
 
-    return translateRequestModel;
+    return translateResultModel;
   }
 }
+
+
+

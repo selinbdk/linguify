@@ -104,7 +104,7 @@ class HomeView extends StatelessWidget {
                       child: TextBoxWidget(
                         readOnly: true,
                         controller: validationProvider.outputController,
-                        hintText: "Output",
+                        hintText: validationProvider.outputController.text,
                         suffix: CopyButton(
                           onPressed: () async {
                             await Clipboard.setData(ClipboardData(
@@ -128,15 +128,17 @@ class HomeView extends StatelessWidget {
                             builder: (_, provider, ___) {
                               log('sacsd');
                               return SelectionButton<LanguageModel?>(
+                                click: provider.click,
                                 itemList: provider.languageList,
                                 texts: provider.languageList
                                     ?.map((e) => e?.displayName ?? '')
                                     .toList(),
                                 result: provider.detectedLanguage,
-          
                                 onChanged: (LanguageModel? newLanguage) {
                                   if (newLanguage != null) {
                                     provider.changeInputLanguage(newLanguage);
+
+                                    provider.toggleClick();
                                   }
                                 },
                               );
@@ -154,15 +156,19 @@ class HomeView extends StatelessWidget {
                           Consumer<TranslationProvider>(
                             builder: (_, provider, ___) {
                               return SelectionButton<LanguageModel?>(
+                                click: provider.click,
                                 itemList: provider.languageList,
                                 texts: provider.languageList
                                     ?.map((e) => e?.displayName ?? "")
                                     .toList(),
-                          
                                 result: provider.currentForOutput,
-                                onChanged: (LanguageModel? newLanguage) {
+                                onChanged: (
+                                  LanguageModel? newLanguage,
+                                ) {
                                   if (newLanguage != null) {
                                     provider.changeOutputLanguage(newLanguage);
+
+                                    provider.toggleClick();
                                   }
                                 },
                               );
@@ -180,16 +186,33 @@ class HomeView extends StatelessWidget {
                         onPressed: validationProvider.isDisable == true
                             ? null
                             : () {
-                                context
-                                    .read<TranslationProvider>()
-                                    .currentForInput
-                                    ?.displayName
-                                    .toString();
-                                context
-                                    .read<TranslationProvider>()
-                                    .currentForOutput
-                                    ?.displayName
-                                    .toString();
+                                () async {
+                                  final validationProvider =
+                                      context.read<ValidationProvider>();
+                                  final provider =
+                                      context.read<TranslationProvider>();
+
+                                  final translateResultModel =
+                                      await TranslationRepository()
+                                          .translateText(
+                                              validationProvider
+                                                  .inputController.text,
+                                              provider.currentForOutput
+                                                  ?.languageCode);
+
+                                  provider.translationsList?.addAll(translateResultModel.translations ?? []);
+
+
+
+                                //* Hata!!!! The property 'translated' can not be unconditionally accessed because the receiver can be null.
+
+                                provider.translationsList?.map((e)=> validationProvider.outputController.text= e.translated?.first);
+                                    
+                                  
+
+                        
+                          
+                                };
                               },
                         message: "Translate",
                       ),
