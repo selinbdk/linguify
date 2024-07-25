@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:linguify/theme/app_theme.dart';
+
+import '../../../theme/app_theme.dart';
 
 extension SnackbarManager on BuildContext {
   void showSuccessMessage() {}
@@ -20,23 +21,24 @@ extension SnackbarManager on BuildContext {
     void Function()? onRetryAction,
   }) {
     final snackbar = SnackBar(
-        duration: const Duration(seconds: 8),
-        content: Row(
-          children: [
-            errorIcon ?? const SizedBox.shrink(),
-            AppSpacing.smallHorizontalSpace,
-            Text(message),
-          ],
-        ),
-        backgroundColor: AppColors.focusedErrorBorder,
-        action: onRetryAction != null
-            ? SnackBarAction(
-                //backgroundColor: AppColors.dividerColor,
-                label: "Retry",
-                textColor: AppColors.labelColor,
-                onPressed: () => (),
-              )
-            : null);
+      duration: const Duration(seconds: 8),
+      content: Row(
+        children: [
+          errorIcon ?? const SizedBox.shrink(),
+          AppSpacing.smallHorizontalSpace,
+          Text(message),
+        ],
+      ),
+      backgroundColor: AppColors.focusedErrorBorder,
+      action: onRetryAction != null
+          ? SnackBarAction(
+              //backgroundColor: AppColors.dividerColor,
+              label: 'Retry',
+              textColor: AppColors.labelColor,
+              onPressed: () => (),
+            )
+          : null,
+    );
 
     ScaffoldMessenger.of(this).showSnackBar(snackbar);
   }

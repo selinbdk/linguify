@@ -9,7 +9,7 @@ class ValidationProvider extends ChangeNotifier {
 
   String? _validationForEmpty(String? value) {
     if (value == null || value.isEmpty) {
-      return "Please enter text";
+      return 'Please enter text';
     } else {
       return null;
     }
@@ -17,7 +17,7 @@ class ValidationProvider extends ChangeNotifier {
 
   String? _validationForTwo(String value) {
     if (value.length < 2) {
-      return "Please enter text of more than 2 characters";
+      return 'Please enter text of more than 2 characters';
     } else {
       return null;
     }
@@ -25,7 +25,7 @@ class ValidationProvider extends ChangeNotifier {
 
   String? _validationForFifty(String value) {
     if (value.length > 50) {
-      return "Please enter text of less than 50 characters";
+      return 'Please enter text of less than 50 characters';
     } else {
       return null;
     }

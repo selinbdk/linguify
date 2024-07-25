@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:linguify/theme/app_theme.dart';
+
+import '../../../theme/app_theme.dart';
 
 class CopyButton extends StatelessWidget {
-  const CopyButton({super.key, required this.onPressed});
+  const CopyButton({required this.onPressed, super.key});
 
   final VoidCallback onPressed;
 

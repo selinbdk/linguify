@@ -6,12 +6,10 @@ part 'language_listings_model.g.dart';
 
 @JsonSerializable()
 class LanguageListingsModel {
-  List<LanguageModel>? languages;
-
   LanguageListingsModel({this.languages});
 
-  factory LanguageListingsModel.fromJson(Map<String, dynamic> json) =>
-      _$LanguageListingsModelFromJson(json);
+  factory LanguageListingsModel.fromJson(Map<String, dynamic> json) => _$LanguageListingsModelFromJson(json);
+  List<LanguageModel>? languages;
 
   Map<String, dynamic> toJson() => _$LanguageListingsModelToJson(this);
 }

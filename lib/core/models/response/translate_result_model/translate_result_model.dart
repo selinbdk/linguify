@@ -6,11 +6,6 @@ part 'translate_result_model.g.dart';
 
 @JsonSerializable()
 class TranslateResultModel {
-  String? from;
-  @JsonKey(name: 'translated_characters')
-  int? translatedCharacters;
-  List<Translation>? translations;
-
   TranslateResultModel({
     this.from,
     this.translatedCharacters,
@@ -20,7 +15,10 @@ class TranslateResultModel {
   factory TranslateResultModel.fromJson(Map<String, dynamic> json) {
     return _$TranslateResultModelFromJson(json);
   }
+  String? from;
+  @JsonKey(name: 'translated_characters')
+  int? translatedCharacters;
+  List<Translation>? translations;
 
   Map<String, dynamic> toJson() => _$TranslateResultModelToJson(this);
-  
 }

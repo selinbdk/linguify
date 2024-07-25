@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:linguify/core/providers/translation_provider.dart';
-import 'package:linguify/core/providers/validation_provider.dart';
-import 'package:linguify/view/splash_view.dart';
 import 'package:provider/provider.dart';
+
+import 'core/providers/translation_provider.dart';
+import 'core/providers/validation_provider.dart';
+import 'view/splash_view.dart';
 //import 'package:provider/provider.dart';
 
 void main() async {
-  await dotenv.load(fileName: ".env");
+  await dotenv.load();
   runApp(const MyApp());
 }
 
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => TranslationProvider()),
       ],
       child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: SplashView(),
       ),
     );

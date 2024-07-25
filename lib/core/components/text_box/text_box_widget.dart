@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:linguify/theme/app_theme.dart';
+
+import '../../../theme/app_theme.dart';
 
 class TextBoxWidget extends StatelessWidget {
   const TextBoxWidget({
-    super.key,
     required this.controller,
+    required this.readOnly,
+    super.key,
     this.suffix,
     this.hintText,
     this.validator,
     this.onChanged,
-    required this.readOnly,
   });
 
   final Widget? suffix;
@@ -29,7 +30,6 @@ class TextBoxWidget extends StatelessWidget {
       onChanged: onChanged,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       cursorColor: AppColors.dividerColor,
-      textAlign: TextAlign.start,
       textAlignVertical: TextAlignVertical.top,
       maxLines: null,
       maxLength: 50,
@@ -39,7 +39,6 @@ class TextBoxWidget extends StatelessWidget {
         contentPadding: const EdgeInsets.only(
           right: 12,
           left: 12,
-          bottom: 0,
           top: 36,
         ),
         suffixIcon: suffix,

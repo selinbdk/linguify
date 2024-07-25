@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:linguify/theme/app_theme.dart';
+
+import '../../../theme/app_theme.dart';
 
 class ClearButton extends StatelessWidget {
-  const ClearButton({super.key, required this.onPressed});
+  const ClearButton({required this.onPressed, super.key});
 
   final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.all(14),
