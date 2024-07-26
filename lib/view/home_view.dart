@@ -1,5 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -65,16 +68,39 @@ class HomeView extends StatelessWidget {
                             'my-debouncer',
                             const Duration(milliseconds: 500),
                             () async {
-                              if (text.length > 2 && text.length < 50) {
-                                final detectLanguageResultModel = await TranslationRepository().detectLanguage(text);
+                              try {
+                                if (text.length > 2 && text.length < 50) {
+                                  final detectLanguageResultModel = await TranslationRepository().detectLanguage(text);
+                                  final provider = context.read<TranslationProvider>();
 
-                                final provider = context.read<TranslationProvider>();
+                                  final detectedLanguage = provider.languageList?.firstWhere((e) =>
+                                      detectLanguageResultModel.detectedLanguages?.contains(e?.languageCode) ?? false);
 
-                                final detectedLanguage = provider.languageList?.firstWhere((e) =>
-                                    detectLanguageResultModel.detectedLanguages?.contains(e?.languageCode) ?? false);
-
-                                provider.detectedLanguage = detectedLanguage;
-
+                                  provider.changeInputLanguage(detectedLanguage);
+                                }
+                              } on DioException catch (e) {
+                                if (e.error is SocketException) {
+                                  context.showErrorMessage(
+                                    message: 'No Internet Connection',
+                                    errorIcon: const Icon(Icons.wifi_off),
+                                  );
+                                } else if (e.response?.statusCode == 429) {
+                                  context.showErrorMessage(
+                                    message: 'Free trial is ended. Please refresh your token',
+                                    errorIcon: const Icon(Icons.payments_sharp),
+                                  );
+                                } else {
+                                  context.showErrorMessage(
+                                    message: 'Something went wrong',
+                                    errorIcon: const Icon(Icons.error_outline),
+                                  );
+                                }
+                              } catch (e) {
+                                context.showErrorMessage(
+                                  message: 'Something went wrong',
+                                  errorIcon: const Icon(Icons.error_outline),
+                                );
+                              } finally {
                                 validationProvider.validateForm();
                               }
                             },
@@ -95,7 +121,7 @@ class HomeView extends StatelessWidget {
                       child: TextBoxWidget(
                         readOnly: true,
                         controller: validationProvider.outputController,
-                        hintText: validationProvider.outputController.text,
+                        hintText: 'Output',
                         suffix: CopyButton(
                           onPressed: () async {
                             await Clipboard.setData(ClipboardData(text: validationProvider.outputController.text));
@@ -131,6 +157,7 @@ class HomeView extends StatelessWidget {
                                 const Text(
                                   'to',
                                   style: TextStyle(
+                                    fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.dividerColor,
                                   ),
@@ -174,23 +201,51 @@ class HomeView extends StatelessWidget {
   }
 
   Future<void> _translate(BuildContext context) async {
-    final validationProvider = context.read<ValidationProvider>();
-    final provider = context.read<TranslationProvider>();
+    try {
+      final validationProvider = context.read<ValidationProvider>();
+      final provider = context.read<TranslationProvider>();
 
-    final translateRequest = TranslateRequestModel(
-      from: provider.currentForInput?.languageCode ?? '',
-      texts: [validationProvider.inputController.text],
-      to: [provider.currentForOutput?.languageCode ?? ''],
-    );
+      final translateRequest = TranslateRequestModel(
+        from: provider.currentForInput?.languageCode ?? '',
+        texts: [validationProvider.inputController.text],
+        to: [provider.currentForOutput?.languageCode ?? ''],
+      );
 
-    final translateResultModel = await TranslationRepository().translateText(translateRequest);
+      final translateResultModel = await TranslationRepository().translateText(translateRequest);
 
-    if (translateResultModel.translations != null) {
-      final firstModel = translateResultModel.translations!.first;
+      if (translateResultModel.translations != null) {
+        final firstModel = translateResultModel.translations!.first;
 
-      if (firstModel.translated != null) {
-        validationProvider.outputController.text = firstModel.translated!.first;
+        if (firstModel.translated != null) {
+          validationProvider.updateOutputController(firstModel.translated!.first);
+        }
       }
+    } on DioException catch (e) {
+      if (e.error is SocketException) {
+        context.showErrorMessage(
+          message: 'No Internet Connection',
+          onRetryAction: () async => _translate(context),
+          errorIcon: const Icon(Icons.wifi_off),
+        );
+      } else if (e.response?.statusCode == 429) {
+        context.showErrorMessage(
+          message: 'Free trial is ended. Please refresh your token',
+          onRetryAction: () async => _translate(context),
+          errorIcon: const Icon(Icons.payments_sharp),
+        );
+      } else {
+        context.showErrorMessage(
+          message: 'Something went wrong',
+          onRetryAction: () async => _translate(context),
+          errorIcon: const Icon(Icons.error_outline),
+        );
+      }
+    } catch (e) {
+      context.showErrorMessage(
+        message: 'Something went wrong',
+        onRetryAction: () async => _translate(context),
+        errorIcon: const Icon(Icons.error_outline),
+      );
     }
   }
 }

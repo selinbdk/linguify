@@ -25,7 +25,11 @@ class TranslationRepository {
       final languageModel = LanguageListingsModel.fromJson(data as Map<String, dynamic>);
 
       return languageModel;
-    } on Exception catch (e) {
+    } on DioException catch (dioError) {
+      print(dioError);
+      rethrow;
+    } catch (e) {
+      //* something went wrong
       print(e);
       rethrow;
     }
@@ -49,9 +53,11 @@ class TranslationRepository {
       final detectLanguageResultModel = DetectLanguageResultModel.fromJson(data! as Map<String, dynamic>);
 
       return detectLanguageResultModel;
-    } on Exception catch (e) {
+    } on DioException catch (e) {
       print(e);
-
+      rethrow;
+    } catch (e) {
+      print(e);
       rethrow;
     }
   }
@@ -72,7 +78,10 @@ class TranslationRepository {
       final translateResultModel = TranslateResultModel.fromJson(data as Map<String, dynamic>);
 
       return translateResultModel;
-    } on Exception catch (e) {
+    } on DioException catch (e) {
+      print(e);
+      rethrow;
+    } catch (e) {
       print(e);
       rethrow;
     }

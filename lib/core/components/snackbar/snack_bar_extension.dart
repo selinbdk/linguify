@@ -26,7 +26,7 @@ extension SnackbarManager on BuildContext {
         children: [
           errorIcon ?? const SizedBox.shrink(),
           AppSpacing.smallHorizontalSpace,
-          Text(message),
+          Expanded(child: Text(message)),
         ],
       ),
       backgroundColor: AppColors.focusedErrorBorder,
@@ -35,7 +35,7 @@ extension SnackbarManager on BuildContext {
               //backgroundColor: AppColors.dividerColor,
               label: 'Retry',
               textColor: AppColors.labelColor,
-              onPressed: () => (),
+              onPressed: onRetryAction,
             )
           : null,
     );
