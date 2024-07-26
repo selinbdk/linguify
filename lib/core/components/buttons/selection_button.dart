@@ -20,7 +20,6 @@ class SelectionButton<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButton2<T>(
-      barrierColor: AppColors.dividerColor,
       underline: Container(height: 1, color: AppColors.dividerColor),
 
       style: const TextStyle(color: AppColors.dividerColor),
@@ -43,7 +42,17 @@ class SelectionButton<T> extends StatelessWidget {
             child: Text(
               texts?[index] ?? '',
               style: TextStyle(
-                color: isSelected ? AppColors.dividerColor : AppColors.enabledBorder,
+                shadows: isSelected
+                    ? const [
+                        Shadow(
+                          color: AppColors.dividerColor,
+                          blurRadius: 2,
+                          offset: Offset(1, 1),
+                        ),
+                      ]
+                    : [],
+                fontSize: 18,
+                color: isSelected ? AppColors.dividerColor : const Color.fromARGB(192, 0, 0, 0),
               ),
             ),
           );
