@@ -3,6 +3,7 @@ analyzer:
   errors:
     cast_nullable_to_non_nullable: ignore
     inference_failure_on_function_invocation: ignore
+    use_setters_to_change_properties: ignore
   exclude:
   - "**/*.mocks.dart"
   - "**/*.g.dart"
