@@ -22,6 +22,11 @@ The goal of this project is to use only the provider and avoid utilizing set sta
 - Json Serializable
 
 ## Screenshots
+<img width="415" alt="linguify_logo" src="https://github.com/user-attachments/assets/6ea0e2e4-620a-4bb7-9a98-452b60108b18">
+<img width="200" alt="selection_buttons" src="https://github.com/user-attachments/assets/6b426904-9f07-4534-88c8-450837b6c273">
+<img width="200" alt="splash_view" src="https://github.com/user-attachments/assets/a8d9677a-6b50-4c9e-8961-ac0632a733ae">
+<img width="200" alt="translation_example" src="https://github.com/user-attachments/assets/3b172f81-c08b-41ff-a1d0-fded4782c6e0">
+
 
 
 ## Set Up
