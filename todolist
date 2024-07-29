@@ -1,0 +1,6 @@
+selection box text'leri kalınlaşacak ve büyüyecek
+to yazısının fontu size ı arttıralacak
+button active yazı rengi beyaz olacak
+output textfield alanında hint text olarak değil controllerdan gelen değer sayesinde yazı gösterilecek
+herhangi bir t anında internet yok ise uygulama bana tepki vermeli
+

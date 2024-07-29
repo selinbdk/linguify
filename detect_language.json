@@ -1,0 +1,16 @@
+{
+    "texts": [
+    "Hello World",
+    "Hallo Welt"
+    ],
+    
+    "detected_languages": [
+    "en",
+    "de"
+    ],
+
+    "original_characters": 10
+
+
+
+}
